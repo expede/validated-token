@@ -2,7 +2,8 @@
 
 ## Status: `DRAFT`
 
-[![CircleCI](https://circleci.com/gh/Finhaven/ValidatedToken.svg?style=svg)](https://circleci.com/gh/Finhaven/ValidatedToken)
+[![Build Status](https://travis-ci.org/expede/validated-token.svg?branch=master)](https://travis-ci.org/expede/validated-token)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ed1d4e37934c28c0fa5a/maintainability)](https://codeclimate.com/github/expede/validated-token/maintainability)
 [![ERC902](https://img.shields.io/badge/ERC-902-386.svg)](https://eips.ethereum.org/EIPS/eip-902)
 [![ERC1066](https://img.shields.io/badge/ERC-1066-42A.svg)](https://eips.ethereum.org/EIPS/eip-1066)
 
@@ -10,19 +11,9 @@
 
 The basic relationship of this protocol is very simple: there are validators that expose two `check` functions:
 
-* `check(address token, address user) returns (byte status)`
-* `check(address token, address to, address from, uint256 amout) returns (byte status)`
-
-```
-    +------+
-    │Caller|
-    +------+
-      │  ↑
-check │  │ status
-      ↓  │
-  +---------+
-  |Validator|
-  +---------+
+```solidity
+check(address token, address user) returns (byte status)
+check(address token, address to, address from, uint256 amout) returns (byte status)
 ```
 
 Why list this as a `Caller` and not `Token`? Because validators may be arranged into a DAG of validation dependencies. They may check `any` and `all` of their dependencies, or have more complex logic, change which dependencies are required based on who they're validating, and so on.

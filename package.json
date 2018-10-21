@@ -1,10 +1,10 @@
 {
   "name": "validated-token",
   "version": "1.0.0",
-  "description": "Smart contract validator reference implementation",
+  "description": "Smart contract validator (ERC902) reference implementation",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Finhaven/ValidatedToken.git"
+    "url": "git+https://github.com/expede/validated-token.git"
   },
   "license": "Apache-2.0",
   "scripts": {
@@ -28,29 +28,30 @@
     }
   },
   "bugs": {
-    "url": "https://github.com/Finhaven/ValidatedToken/issues"
+    "url": "https://github.com/expede/validated-token/issues"
   },
   "engines": {
-    "node": "8.4"
+    "node": "10.11"
   },
   "dependencies": {
     "eip777": "^0.0.3",
     "eip820": "^0.0.17",
     "giveth-common-contracts": "^0.5.0",
-    "solc": "^0.4.23",
-    "truffle-hdwallet-provider": "0.0.3"
+    "solc": "^0.4.23"
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.9.0",
-    "ganache-cli": "^6.1.0",
-    "mocha": "^5.0.5",
+    "eslint": "^5.5.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-chai-friendly": "^0.4.1",
+    "eslint-plugin-import": "^2.14.0",
+    "ethereum-localized-messaging": "^1.1.1",
+    "ganache-cli": "^6.1.8",
+    "mocha": "^5.2.0",
     "npm-watch": "^0.3.0",
-    "solhint": "^1.1.10",
-    "solidity-coverage": "^0.4.14",
-    "truffle": "^4.1.7",
+    "solhint": "^1.2.1",
+    "solidity-coverage": "^0.5.11",
+    "truffle": "^5.0.0-beta.1",
     "zeppelin-solidity": "1.8.0"
   }
 }
