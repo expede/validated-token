@@ -1,9 +1,8 @@
 # Validated Token Example Contracts
 
-## Status: `DRAFT`
-
 [![Build Status](https://travis-ci.org/expede/validated-token.svg?branch=master)](https://travis-ci.org/expede/validated-token)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ed1d4e37934c28c0fa5a/maintainability)](https://codeclimate.com/github/expede/validated-token/maintainability)
+![ERC Status](https://img.shields.io/badge/erc_status-DRAFT-lightrey.svg)
 [![ERC902](https://img.shields.io/badge/ERC-902-386.svg)](https://eips.ethereum.org/EIPS/eip-902)
 [![ERC1066](https://img.shields.io/badge/ERC-1066-42A.svg)](https://eips.ethereum.org/EIPS/eip-1066)
 
