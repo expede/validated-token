@@ -4,6 +4,7 @@
 
 [![CircleCI](https://circleci.com/gh/Finhaven/ValidatedToken.svg?style=svg)](https://circleci.com/gh/Finhaven/ValidatedToken)
 [![ERC902](https://img.shields.io/badge/ERC-902-386.svg)](https://eips.ethereum.org/EIPS/eip-902)
+[![ERC1066](https://img.shields.io/badge/ERC-1066-42A.svg)](https://eips.ethereum.org/EIPS/eip-1066)
 
 ## Architecture
 
@@ -94,4 +95,4 @@ Each of these validation services may be operated variously by the travel agency
 
 ## Links
 
-* [EIP](https://github.com/ethereum/EIPs/pull/902)
+* [EIP](https://eips.ethereum.org/EIPS/eip-902)
