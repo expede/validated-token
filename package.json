@@ -2,6 +2,15 @@
   "name": "validated-token",
   "version": "1.0.0",
   "description": "Smart contract validator (ERC902) reference implementation",
+  "keywords": [
+    "ethereum",
+    "solidity",
+    "validation",
+    "eip",
+    "erc",
+    "902",
+    "1066"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/expede/validated-token.git"
