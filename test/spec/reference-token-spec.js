@@ -1,18 +1,18 @@
-const { assert } = require('chai');
+const { expect } = require('chai');
 
 const SimpleAuthorization = artifacts.require('SimpleAuthorization'); // eslint-disable-line no-undef
 const ReferenceToken = artifacts.require('ReferenceToken'); // eslint-disable-line no-undef
 
 const revertMessage = 'VM Exception while processing transaction: revert';
 
-async function failTransaction(func, args, errorMessage) {
+const expectRevert = async (func, msg = 'revert') => {
   try {
-    await func.apply(this, args);
-    throw new Error('Should have failed');
-  } catch (e) {
-    assert.equal(e.message, errorMessage);
+    await func();
+    throw new Error('Expected EVM failure');
+  } catch ({ message }) {
+    expect(message).to.have.string(msg);
   }
-}
+};
 
 contract('ReferenceToken', (accounts) => { // eslint-disable-line no-undef
   const name = 'testToken';
@@ -34,7 +34,7 @@ contract('ReferenceToken', (accounts) => { // eslint-disable-line no-undef
   });
 
   it('should get instance of reference token', () => {
-    assert.isNotNull(referenceToken);
+    expect(referenceToken).to.not.be.null;
   });
 
   it('authorized should get tokens', async () => {
@@ -42,17 +42,16 @@ contract('ReferenceToken', (accounts) => { // eslint-disable-line no-undef
     const mintResult = await referenceToken.mint(targetAccount, amount * granularity);
     const validationEvent = mintResult.logs[0];
 
-    assert.equal(validationEvent.event, 'Validation');
-    assert.equal(validationEvent.args.user, targetAccount);
+    expect(validationEvent.event).to.equal('Validation');
+    expect(validationEvent.args.user).to.equal(targetAccount);
 
     const balance = await referenceToken.balanceOf(targetAccount);
-    assert.equal(balance, amount * granularity);
+    expect(balance.toNumber()).to.equal(amount * granularity);
   });
 
   it('reference token receiver (mint) should be authorized', async () => {
-    await failTransaction(
-      referenceToken.mint,
-      [targetAccount, amount * granularity],
+    await expectRevert(
+      () => referenceToken.mint(targetAccount, amount * granularity),
       revertMessage,
     );
 
@@ -62,37 +61,58 @@ contract('ReferenceToken', (accounts) => { // eslint-disable-line no-undef
 
   it('reference token receiver (transfer) should be authorized', async () => {
     await simpleAuthorization.setAuthorized(sender, true);
-    await referenceToken.mint(sender, amount * granularity);
-    await failTransaction(
-      referenceToken.transfer,
-      [receiver, amount * granularity, { from: sender }],
+    // await referenceToken.mint(sender, amount * granularity);
+    await expectRevert(
+      () => referenceToken.transfer(receiver, amount * granularity, { from: sender }),
       revertMessage,
     );
 
     const receiverBalance = await referenceToken.balanceOf(receiver);
-    assert.equal(receiverBalance, 0);
+    expect(receiverBalance.toNumber()).to.equal(0);
   });
 
-  it('tranfer tokens', async () => {
-    const authorized =
-      await simpleAuthorization.check.call(referenceToken.address, sender, receiver, amount);
+  describe('transfer tokens', async () => {
+    let authorized;
+    let validationEvent;
+    let receiverBalance;
 
-    assert.equal(authorized, '0x10');
+    before(async () => {
+      authorized =
+        await simpleAuthorization.check.call(referenceToken.address, sender, receiver, amount);
 
-    await simpleAuthorization.setAuthorized(sender, true);
-    await simpleAuthorization.setAuthorized(receiver, true);
-    await referenceToken.mint(sender, amount * granularity);
+      await simpleAuthorization.setAuthorized(sender, true);
+      await simpleAuthorization.setAuthorized(receiver, true);
+      await referenceToken.mint(sender, amount * granularity);
 
-    const transferResult =
-      await referenceToken.transfer(receiver, amount * granularity, { from: sender });
+      const transferResult =
+        await referenceToken.transfer(receiver, amount * granularity, { from: sender });
 
-    const validationEvent = transferResult.logs[0];
-    assert.equal(validationEvent.event, 'Validation');
-    assert.equal(validationEvent.args.from, sender);
-    assert.equal(validationEvent.args.to, receiver);
-    assert.equal(validationEvent.args.value, amount * granularity);
+      validationEvent = transferResult.logs[0];
+      receiverBalance = await referenceToken.balanceOf(receiver);
+    });
 
-    const receiverBalance = await referenceToken.balanceOf(receiver);
-    assert.equal(receiverBalance, amount * granularity);
+    it('is an authorized transfer', () => {
+      expect(authorized).to.equal('0x10');
+    });
+
+    it('emits a Validation event', () => {
+      expect(validationEvent.event).to.equal('Validation');
+    });
+
+    it('is from the correct sender', () => {
+      expect(validationEvent.args.from).to.equal(sender);
+    });
+
+    it('send the correct amount', () => {
+      expect(validationEvent.args.value.toNumber()).to.eq(amount * granularity);
+    });
+
+    it('is going to the correct receiver', () => {
+      expect(validationEvent.args.to).to.eq(receiver);
+    });
+
+    it('has the correct final balance', async() => {
+      expect(receiverBalance.toNumber()).to.eq(amount * granularity);
+    });
   });
 });
